@@ -1,0 +1,3 @@
+[submodule "android-application-id-url-db"]
+	path = AppIdLinker/Resources/android-application-id-url-db
+	url = https://github.com/zedseven/android-application-id-url-db
