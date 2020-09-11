@@ -1,8 +1,8 @@
 @ECHO OFF
 REM Credit goes to https://github.com/KoenZomers/KeePassOneDriveSync for creating the base of this script
 ECHO Creating KeePass plugin package...
-SET PLUGIN_NAME=NewPlugin
-SET SourceFolder=NewPlugin
+SET PLUGIN_NAME=AppIdLinker
+SET SourceFolder=AppIdLinker
 SET KeePassFolder="C:\Program Files (x86)\KeePass Password Safe 2"
 SET DotNetVersion=4.0
 IF EXIST %~dp0%SourceFolder%\obj RD /s /q %~dp0%SourceFolder%\obj
