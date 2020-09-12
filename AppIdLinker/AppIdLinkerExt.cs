@@ -4,6 +4,8 @@ using KeePass.Util;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using KeePassLib;
+using KeePassLib.Security;
 
 namespace AppIdLinker
 {
@@ -33,7 +35,7 @@ namespace AppIdLinker
 			//Set the version information file signature
 			UpdateCheckEx.SetFileSigKey(UpdateUrl, Resources.AppIdLinkerExt_UpdateCheckFileSigKey);
 
-			//Interface.Init(_host);
+			Db.Init(Resources.DomainAppIdDb);
 
 			return true;
 		}
@@ -42,37 +44,52 @@ namespace AppIdLinker
 		{
 		}
 
-		/*public override ToolStripMenuItem GetMenuItem(PluginMenuType t)
+		public override ToolStripMenuItem GetMenuItem(PluginMenuType t)
 		{
-			if (t != PluginMenuType.Entry)
+			if (t != PluginMenuType.Main)
 				return null;
 
 			ToolStripMenuItem tsmi = new ToolStripMenuItem
 			{
-				Text = Resources.PatternPassExt_GetMenuItem_PatternPass_Plugin,
+				Text = Resources.AppIdLinkerExt_GetMenuItem_AppIdLinker_Plugin,
 				Image = Resources.MenuIcon
 			};
 
-			ToolStripMenuItem tsmiSetup = new ToolStripMenuItem
+			ToolStripMenuItem tsmiAdd = new ToolStripMenuItem
 			{
-				Text = Resources.PatternPassExt_GetMenuItem_Setup_Pattern
+				Text = Resources.AppIdLinkerExt_GetMenuItem_Add_IDs
 			};
-			tsmiSetup.Click += OnEntrySetupClick;
+			tsmiAdd.Click += OnAddIdsClicked;
 
-			ToolStripMenuItem tsmiDisplay = new ToolStripMenuItem
+			ToolStripMenuItem tsmiRemove = new ToolStripMenuItem
 			{
-				Text = Resources.PatternPassExt_GetMenuItem_Show_Pattern
-				//Enabled = _host.MainWindow.GetSelectedEntriesCount() == 1 && _host.MainWindow.GetSelectedEntry(true).Strings.Get(Constants.PatternStringName) != null
+				Text = Resources.AppIdLinkerExt_GetMenuItem_Remove_IDs
 			};
-			tsmiDisplay.Click += OnEntryDisplayClick;
+			tsmiRemove.Click += OnRemoveIdsClicked;
 
-			tsmi.DropDownItems.Add(tsmiSetup);
-			tsmi.DropDownItems.Add(tsmiDisplay);
+			tsmi.DropDownItems.Add(tsmiAdd);
+			tsmi.DropDownItems.Add(tsmiRemove);
 
 			return tsmi;
 		}
 
-		private void OnEntrySetupClick(object sender, EventArgs e)
+		private void OnAddIdsClicked(object sender, EventArgs e)
+		{
+			PwEntry[] entries = _host.MainWindow.GetSelectedEntries();
+			for (int i = 0; i < entries.Length; i++)
+			{
+				string newNotes = Db.AddToDesc(entries[i].Strings.ReadSafe(PwDefs.UrlField),
+					entries[i].Strings.ReadSafe(PwDefs.NotesField));
+				//entries[i].Strings.Set(PwDefs.NotesField, new ProtectedString(true, newNotes));
+			}
+		}
+
+		private void OnRemoveIdsClicked(object sender, EventArgs e)
+		{
+
+		}
+
+		/*private void OnEntrySetupClick(object sender, EventArgs e)
 		{
 			if (_host.MainWindow.GetSelectedEntriesCount() != 1)
 				return;
@@ -91,5 +108,5 @@ namespace AppIdLinker
 			patternDisplayForm.ShowDialog();
 			_host.MainWindow.RefreshEntriesList();
 		}*/
-	}
+		}
 }

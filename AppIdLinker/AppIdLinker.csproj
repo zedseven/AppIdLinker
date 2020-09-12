@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppIdLinkerExt.cs" />
+    <Compile Include="Db.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -67,11 +68,14 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>CD "$(SolutionDir)"
-IF "$(ConfigurationName)" == "Debug" (
-  build-plgx.bat --debug
-) ELSE (
-  build-plgx.bat
+    <PostBuildEvent>SET Testing=1
+IF %25Testing%25 == 0 (
+  CD "$(SolutionDir)"
+  IF "$(ConfigurationName)" == "Debug" (
+    build-plgx.bat --debug
+  ) ELSE (
+    build-plgx.bat
+  )
 )</PostBuildEvent>
   </PropertyGroup>
 </Project>

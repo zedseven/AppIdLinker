@@ -61,6 +61,33 @@ namespace AppIdLinker.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add IDs to selected entries.
+        /// </summary>
+        internal static string AppIdLinkerExt_GetMenuItem_Add_IDs {
+            get {
+                return ResourceManager.GetString("AppIdLinkerExt_GetMenuItem_Add_IDs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to AppIdLinker Plugin.
+        /// </summary>
+        internal static string AppIdLinkerExt_GetMenuItem_AppIdLinker_Plugin {
+            get {
+                return ResourceManager.GetString("AppIdLinkerExt_GetMenuItem_AppIdLinker_Plugin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove IDs from selected entries.
+        /// </summary>
+        internal static string AppIdLinkerExt_GetMenuItem_Remove_IDs {
+            get {
+                return ResourceManager.GetString("AppIdLinkerExt_GetMenuItem_Remove_IDs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;RSAKeyValue&gt;&lt;Modulus&gt;sxOD2un0IddS55rX6hg5AFtP5yYBjF54rgJn8LX4Z5A10oX/lpw44bWvrI3FKC0GbufPwjRcoVsUKCbuJuFfoKJCp0PDPRZB3qiA9dUdfpMLeC5A5kLSAG7c5NxqYJOlJfykJCgAKqmNknWqDdsjOrF9RDzfZcz3P7DWpvc3KGgLzz6gUUD67YVAQVncv7N1NZ5rUoaVDdurpOO82WrTrX2YVg1eXK7pfzD0VziOOmlubI5lhOZrm9aFscY80QGZaTbBaPQJHksfbZBSM6Uje1bun7epAs/axEst/T7rr8Ekz4lsoco53q1PeyJvL5uO8al3Dl9mHhE1yyEQ8lsqRHLN5y7CLiufjGvRLoaN0eImm87iORMbRMBTmfW83uhi4JWPUkL8RPPx9ehYJGUVFOlA8ttRvFaSPowXqTFFTuB+fwQYMhr+W/jOkgi2YbKajm3zk8ktGpNrQGjEJvkjJmejhHH8YNTJpC1K95yzbZ [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string AppIdLinkerExt_UpdateCheckFileSigKey {
@@ -77,7 +104,7 @@ namespace AppIdLinker.Properties {
         ///bandcamp.com | com.bandcamp.android
         ///blizzard.com, battle.net | com.blizzard.bma
         ///desmos.com | com.desmos.calculator, com.desmos.scientific
-        ///discord.com, discordapp.com, discord.gg |  [rest of string was truncated]&quot;;.
+        ///discord.com, discordapp.com, discor [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string DomainAppIdDb {
             get {
