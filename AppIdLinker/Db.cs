@@ -11,20 +11,8 @@ namespace AppIdLinker
 		private const string HeaderText = "Associated Android app IDs:";
 		private static DbEntry[] _internalDb;
 
-		private struct DbEntry
-		{
-			public string[] Domains;
-			public string[] AppIds;
-
-			public DbEntry(string[] domains, string[] appIds)
-			{
-				Domains = domains;
-				AppIds = appIds;
-			}
-		}
-
 		/// <summary>
-		///		Initializes the database.
+		///     Initializes the database.
 		/// </summary>
 		public static void Init(string dbContents)
 		{
@@ -34,12 +22,13 @@ namespace AppIdLinker
 			{
 				if (line.Length <= 0 || line[0] == CommentMarker)
 					continue;
-				string[] lineParts = line.Split(new [] { PartSeparator }, 2);
+				string[] lineParts = line.Split(new[] {PartSeparator}, 2);
 				if (lineParts.Length != 2 || lineParts[0].Length <= 0 || lineParts[1].Length <= 0)
 					continue;
 				workingDb.Add(new DbEntry(lineParts[0].Split(ListDelimiter).Select(e => e.Trim()).ToArray(),
 					lineParts[1].Split(ListDelimiter).Select(e => e.Trim()).ToArray()));
 			}
+
 			_internalDb = workingDb.ToArray();
 		}
 
@@ -85,7 +74,9 @@ namespace AppIdLinker
 			else
 			{
 				if (lines[lines.Count - 1].Length <= 0)
+				{
 					lines[lines.Count - 1] = HeaderText;
+				}
 				else
 				{
 					lines.Add("");
@@ -108,7 +99,6 @@ namespace AppIdLinker
 			int headerIndex = -1;
 			int stopIndex = -1;
 			for (int i = 0; i < lines.Count; i++)
-			{
 				if (headerIndex <= -1)
 				{
 					if (lines[i] == HeaderText)
@@ -121,7 +111,6 @@ namespace AppIdLinker
 					stopIndex = i;
 					break;
 				}
-			}
 
 			if (headerIndex <= -1)
 				return desc;
@@ -129,7 +118,7 @@ namespace AppIdLinker
 			if (stopIndex <= -1)
 				stopIndex = lines.Count;
 
-			if(headerIndex - 1 >= 0 && lines[headerIndex - 1].Length <= 0)
+			if (headerIndex - 1 >= 0 && lines[headerIndex - 1].Length <= 0)
 				lines.RemoveRange(headerIndex - 1, stopIndex + 1 - headerIndex);
 			else
 				lines.RemoveRange(headerIndex, stopIndex + 1 - headerIndex);
@@ -157,10 +146,22 @@ namespace AppIdLinker
 		{
 			if (url.Length < domain.Length)
 				return false;
-			for(int i = domain.Length - 1, j = url.Length - 1; i >= 0; i--, j--)
+			for (int i = domain.Length - 1, j = url.Length - 1; i >= 0; i--, j--)
 				if (domain[i] != url[j])
 					return false;
 			return true;
+		}
+
+		private struct DbEntry
+		{
+			public readonly string[] Domains;
+			public readonly string[] AppIds;
+
+			public DbEntry(string[] domains, string[] appIds)
+			{
+				Domains = domains;
+				AppIds = appIds;
+			}
 		}
 	}
 }

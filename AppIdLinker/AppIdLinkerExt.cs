@@ -1,17 +1,18 @@
-﻿using AppIdLinker.Properties;
-using KeePass.Plugins;
-using KeePass.Util;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
+using AppIdLinker.Properties;
+using KeePass.Plugins;
+using KeePass.Util;
 using KeePassLib;
 using KeePassLib.Security;
 
 namespace AppIdLinker
 {
 	/// <summary>
-	///     A KeePass plugin for including Android app IDs in the description of entries based on their URLs. This increases the searchability of relevant password entries for Android apps like Keepass2Android.
+	///     A KeePass plugin for including Android app IDs in the description of entries based on their URLs. This increases
+	///     the searchability of relevant password entries for Android apps like Keepass2Android.
 	/// </summary>
 	public sealed class AppIdLinkerExt : Plugin
 	{
@@ -47,58 +48,68 @@ namespace AppIdLinker
 
 		public override ToolStripMenuItem GetMenuItem(PluginMenuType t)
 		{
-			if (t != PluginMenuType.Main && t!= PluginMenuType.Entry)
+			if (t != PluginMenuType.Main && t != PluginMenuType.Entry)
 				return null;
 
-			ToolStripMenuItem tsmi = new ToolStripMenuItem
+			ToolStripMenuItem strip = new ToolStripMenuItem
 			{
 				Text = Resources.AppIdLinkerExt_GetMenuItem_AppIdLinker_Plugin,
 				Image = Resources.MenuIcon
 			};
 
-			ToolStripMenuItem tsmiAdd = new ToolStripMenuItem
+			ToolStripMenuItem stripAdd = new ToolStripMenuItem
 			{
 				Text = Resources.AppIdLinkerExt_GetMenuItem_Add_IDs
 			};
-			tsmiAdd.Click += OnAddIdsClicked;
+			stripAdd.Click += OnAddIdsClicked;
 
-			ToolStripMenuItem tsmiRemove = new ToolStripMenuItem
+			ToolStripMenuItem stripRemove = new ToolStripMenuItem
 			{
 				Text = Resources.AppIdLinkerExt_GetMenuItem_Remove_IDs
 			};
-			tsmiRemove.Click += OnRemoveIdsClicked;
+			stripRemove.Click += OnRemoveIdsClicked;
 
-			tsmi.DropDownItems.Add(tsmiAdd);
-			tsmi.DropDownItems.Add(tsmiRemove);
+			strip.DropDownItems.Add(stripAdd);
+			strip.DropDownItems.Add(stripRemove);
 
-			return tsmi;
+			return strip;
 		}
 
 		private void OnAddIdsClicked(object sender, EventArgs e)
 		{
+			PwEntry[] entries = _host.MainWindow.GetSelectedEntries();
+			if (entries == null || entries.Length <= 0)
+				return;
+
 			Stopwatch operationStopwatch = Stopwatch.StartNew();
 			_host.MainWindow.SetStatusEx("AppIdLinker: Adding IDs to selected entries.");
-			PwEntry[] entries = _host.MainWindow.GetSelectedEntries();
 			for (int i = 0; i < entries.Length; i++)
 			{
 				string newNotes = Db.AddToDesc(entries[i].Strings.ReadSafe(PwDefs.UrlField),
 					entries[i].Strings.ReadSafe(PwDefs.NotesField));
 				entries[i].Strings.Set(PwDefs.NotesField, new ProtectedString(true, newNotes));
 			}
-			_host.MainWindow.SetStatusEx("AppIdLinker: Finished adding IDs to selected entries. Time taken: " + operationStopwatch.Elapsed.TotalSeconds + "s");
+
+			_host.MainWindow.SetStatusEx("AppIdLinker: Finished adding IDs to selected entries. Time taken: " +
+			                             operationStopwatch.Elapsed.TotalSeconds + "s");
 		}
 
 		private void OnRemoveIdsClicked(object sender, EventArgs e)
 		{
+			PwEntry[] entries = _host.MainWindow.GetSelectedEntries();
+			if (entries == null || entries.Length <= 0)
+				return;
+
 			Stopwatch operationStopwatch = Stopwatch.StartNew();
 			_host.MainWindow.SetStatusEx("AppIdLinker: Removing IDs from selected entries.");
-			PwEntry[] entries = _host.MainWindow.GetSelectedEntries();
 			for (int i = 0; i < entries.Length; i++)
 			{
 				string newNotes = Db.RemoveFromDesc(entries[i].Strings.ReadSafe(PwDefs.NotesField));
 				entries[i].Strings.Set(PwDefs.NotesField, new ProtectedString(true, newNotes));
 			}
-			_host.MainWindow.SetStatusEx("AppIdLinker: Finished removing IDs from selected entries. Time taken: " + operationStopwatch.Elapsed.TotalSeconds + "s");
+
+			_host.MainWindow.SetStatusEx("AppIdLinker: Finished removing IDs from selected entries. Time taken: " +
+			                             operationStopwatch.Elapsed.TotalSeconds + "s");
 		}
 	}
 }

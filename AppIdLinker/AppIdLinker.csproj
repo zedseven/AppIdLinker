@@ -68,7 +68,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>SET Testing=0
+    <PostBuildEvent>SET Testing=0 
 IF %25Testing%25 == 0 (
   CD "$(SolutionDir)"
   IF "$(ConfigurationName)" == "Debug" (
