@@ -26,4 +26,6 @@ And if you decide you don't like or need the IDs on an entry anymore, the plugin
 ## App IDs I Missed
 I'm certain I've missed a bunch of common apps, but the database I compiled was made mostly from my own usage, so there was only so much I could do.
 
-The database is actually [it's own GitHub repository](https://github.com/zedseven/android-application-id-url-db), and you can find more details about contributing [over there](https://github.com/zedseven/android-application-id-url-db/blob/master/CONTRIBUTING.md).
+If you've found something I missed or want to add the IDs of apps you use, the database of package names is actually [it's own GitHub repository](https://github.com/zedseven/android-application-id-url-db), and you can find more details about contributing [over there](https://github.com/zedseven/android-application-id-url-db/blob/master/CONTRIBUTING.md). I'd be happy to take any suggestions.
+
+If you have any suggestions about the plugin itself or if you find any problems, please [open an issue](https://github.com/zedseven/AppIdLinker/issues/new/choose) so I can get them fixed.
