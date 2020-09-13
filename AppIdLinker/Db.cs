@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using AppIdLinker.Properties;
 using System.Linq;
 
 namespace AppIdLinker
@@ -10,7 +9,19 @@ namespace AppIdLinker
 		private const char ListDelimiter = ',';
 		private const char CommentMarker = '#';
 		private const string HeaderText = "Associated Android app IDs:";
-		private static (string[] domains, string[] appIds)[] _internalDb;
+		private static DbEntry[] _internalDb;
+
+		private struct DbEntry
+		{
+			public string[] Domains;
+			public string[] AppIds;
+
+			public DbEntry(string[] domains, string[] appIds)
+			{
+				Domains = domains;
+				AppIds = appIds;
+			}
+		}
 
 		/// <summary>
 		///		Initializes the database.
@@ -18,15 +29,15 @@ namespace AppIdLinker
 		public static void Init(string dbContents)
 		{
 			string[] lines = dbContents.Replace("\r", "").Split('\n').Select(e => e.Trim()).ToArray();
-			List<(string[], string[])> workingDb = new List<(string[], string[])>();
+			List<DbEntry> workingDb = new List<DbEntry>();
 			foreach (string line in lines)
 			{
 				if (line.Length <= 0 || line[0] == CommentMarker)
 					continue;
 				string[] lineParts = line.Split(new [] { PartSeparator }, 2);
-				if (lineParts.Length < 2 || lineParts[0].Length <= 0 || lineParts[1].Length <= 0)
+				if (lineParts.Length != 2 || lineParts[0].Length <= 0 || lineParts[1].Length <= 0)
 					continue;
-				workingDb.Add((lineParts[0].Split(ListDelimiter).Select(e => e.Trim()).ToArray(),
+				workingDb.Add(new DbEntry(lineParts[0].Split(ListDelimiter).Select(e => e.Trim()).ToArray(),
 					lineParts[1].Split(ListDelimiter).Select(e => e.Trim()).ToArray()));
 			}
 			_internalDb = workingDb.ToArray();
@@ -91,16 +102,53 @@ namespace AppIdLinker
 			return string.Join("\n", lines);
 		}
 
+		public static string RemoveFromDesc(string desc)
+		{
+			List<string> lines = desc.Replace("\r", "").Split('\n').Select(e => e.Trim()).ToList();
+			int headerIndex = -1;
+			int stopIndex = -1;
+			for (int i = 0; i < lines.Count; i++)
+			{
+				if (headerIndex <= -1)
+				{
+					if (lines[i] == HeaderText)
+						headerIndex = i;
+				}
+				else
+				{
+					if (lines[i].Length > 0)
+						continue;
+					stopIndex = i;
+					break;
+				}
+			}
+
+			if (headerIndex <= -1)
+				return desc;
+
+			if (stopIndex <= -1)
+				stopIndex = lines.Count;
+
+			if(headerIndex - 1 >= 0 && lines[headerIndex - 1].Length <= 0)
+				lines.RemoveRange(headerIndex - 1, stopIndex + 1 - headerIndex);
+			else
+				lines.RemoveRange(headerIndex, stopIndex + 1 - headerIndex);
+
+			return string.Join("\n", lines);
+		}
+
 		private static string[] FindAssociatedIds(string url)
 		{
-			url = url.Replace("https://", "").Replace("http://", "");
+			int protocolColonIndex = url.IndexOf("://");
+			if (protocolColonIndex > -1)
+				url = url.Remove(0, protocolColonIndex + 3);
 			int slashIndex = url.IndexOf('/');
 			if (slashIndex > -1)
 				url = url.Remove(slashIndex);
 			for (int i = 0; i < _internalDb.Length; i++)
-				foreach (string domain in _internalDb[i].domains)
+				foreach (string domain in _internalDb[i].Domains)
 					if (UrlMatchesDomain(url, domain))
-						return _internalDb[i].appIds;
+						return _internalDb[i].AppIds;
 
 			return null;
 		}

@@ -2,6 +2,7 @@
 using KeePass.Plugins;
 using KeePass.Util;
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using KeePassLib;
@@ -46,7 +47,7 @@ namespace AppIdLinker
 
 		public override ToolStripMenuItem GetMenuItem(PluginMenuType t)
 		{
-			if (t != PluginMenuType.Main)
+			if (t != PluginMenuType.Main && t!= PluginMenuType.Entry)
 				return null;
 
 			ToolStripMenuItem tsmi = new ToolStripMenuItem
@@ -75,38 +76,29 @@ namespace AppIdLinker
 
 		private void OnAddIdsClicked(object sender, EventArgs e)
 		{
+			Stopwatch operationStopwatch = Stopwatch.StartNew();
+			_host.MainWindow.SetStatusEx("AppIdLinker: Adding IDs to selected entries.");
 			PwEntry[] entries = _host.MainWindow.GetSelectedEntries();
 			for (int i = 0; i < entries.Length; i++)
 			{
 				string newNotes = Db.AddToDesc(entries[i].Strings.ReadSafe(PwDefs.UrlField),
 					entries[i].Strings.ReadSafe(PwDefs.NotesField));
-				//entries[i].Strings.Set(PwDefs.NotesField, new ProtectedString(true, newNotes));
+				entries[i].Strings.Set(PwDefs.NotesField, new ProtectedString(true, newNotes));
 			}
+			_host.MainWindow.SetStatusEx("AppIdLinker: Finished adding IDs to selected entries. Time taken: " + operationStopwatch.Elapsed.TotalSeconds + "s");
 		}
 
 		private void OnRemoveIdsClicked(object sender, EventArgs e)
 		{
-
+			Stopwatch operationStopwatch = Stopwatch.StartNew();
+			_host.MainWindow.SetStatusEx("AppIdLinker: Removing IDs from selected entries.");
+			PwEntry[] entries = _host.MainWindow.GetSelectedEntries();
+			for (int i = 0; i < entries.Length; i++)
+			{
+				string newNotes = Db.RemoveFromDesc(entries[i].Strings.ReadSafe(PwDefs.NotesField));
+				entries[i].Strings.Set(PwDefs.NotesField, new ProtectedString(true, newNotes));
+			}
+			_host.MainWindow.SetStatusEx("AppIdLinker: Finished removing IDs from selected entries. Time taken: " + operationStopwatch.Elapsed.TotalSeconds + "s");
 		}
-
-		/*private void OnEntrySetupClick(object sender, EventArgs e)
-		{
-			if (_host.MainWindow.GetSelectedEntriesCount() != 1)
-				return;
-
-			PatternSetupForm patternSetupForm = new PatternSetupForm(_host.MainWindow.GetSelectedEntry(true));
-			patternSetupForm.ShowDialog();
-			_host.MainWindow.RefreshEntriesList();
-		}
-
-		private void OnEntryDisplayClick(object sender, EventArgs e)
-		{
-			if (_host.MainWindow.GetSelectedEntriesCount() != 1)
-				return;
-
-			PatternDisplayForm patternDisplayForm = new PatternDisplayForm(_host.MainWindow.GetSelectedEntry(true));
-			patternDisplayForm.ShowDialog();
-			_host.MainWindow.RefreshEntriesList();
-		}*/
-		}
+	}
 }
